@@ -3,7 +3,7 @@
 #include <random>
 
 #include <Screen.hpp>
-#include <Entity.hpp>
+#include <Snow.hpp>
 #include <Vector2f.hpp>
 
 int main(int argc, char** argv)
@@ -23,13 +23,13 @@ int main(int argc, char** argv)
 
     std::uniform_real_distribution<float> dis(0, 1);
 
-    std::vector<std::pair<Entity, float>> entities;
+    std::vector<Snow> entities;
 
     for(int i = 0; i < 50; i++)
     {
         Vector2f pos(dis(gen) * 1600, -1 * dis(gen) * 1000);
-        Entity tempentity(pos, snow, 8, 8);
-        entities.push_back({tempentity, (dis(gen) + 0.1) / 5 + 0.2});
+        Snow tempentity(pos, snow, 8, 8, (dis(gen) + 0.1) / 5 + 0.2);
+        entities.push_back(tempentity);
     }
 
     bool gamerunning = true;
@@ -53,6 +53,8 @@ int main(int argc, char** argv)
 
         if(t >= timeTick)
         {
+            const float alpha = t / timeTick;
+
             t -= timeTick;
         
 
@@ -72,21 +74,21 @@ int main(int argc, char** argv)
 
             for(int i = 0; i < (int)entities.size(); i++)
             {
-                screen.render(entities[i].first);
-                entities[i].first.position().y += entities[i].second;
+                screen.render(entities[i]);
+                entities[i].position().y += entities[i].speed;
 
-                if(entities[i].first.position().y > 800)
+                if(entities[i].position().y > 800)
                 {
                     entities.erase(entities.begin() + i);
                     i--;
 
-                    Vector2f pos(dis(gen) * 1600, -1 * dis(gen) * 100);
-                    Entity tempentity(pos, snow, 8, 8);
-                    entities.push_back({tempentity, (dis(gen) + 0.1) / 5 + 0.2});
+                    Vector2f pos(dis(gen) * 1600, -1 * dis(gen) * 1000);
+                    Snow tempentity(pos, snow, 8, 8, (dis(gen) + 0.1) / 5 + 0.2);
+                    entities.push_back(tempentity);
                 }
             }
 
-            std::cout << t << std::endl;
+            std::cout << alpha << std::endl;
 
             screen.display();
         }
