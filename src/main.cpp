@@ -27,71 +27,50 @@ int main(int argc, char** argv)
 
     for(int i = 0; i < 50; i++)
     {
-        Vector2f pos(dis(gen) * 1600, -1 * dis(gen) * 1000);
-        Snow tempentity(pos, snow, 8, 8, (dis(gen) + 0.1) / 5 + 0.2);
+        Snow tempentity(Vector2f(dis(gen) * 1600, -1 * dis(gen) * 1000), snow, 8, 8, (dis(gen) + 1) / 20);
         entities.push_back(tempentity);
     }
 
     bool gamerunning = true;
 
-    Uint64 prevTicks = SDL_GetTicks64();
-    Uint64 currentTicks;
-    int frameTime;
-    float t = 0;
-
-    const float timeTick = 1000.0f / 144.0f;
+    Uint64 NOW = SDL_GetPerformanceCounter();
+    Uint64 LAST = 0;
+    float deltaTime = 0;
 
     while(gamerunning)
     {
-        currentTicks = SDL_GetTicks64();
+        LAST = NOW;
+        NOW = SDL_GetPerformanceCounter();
+        deltaTime = (float)((NOW - LAST) * 1000 / (float)SDL_GetPerformanceFrequency());
 
-        frameTime = currentTicks - prevTicks;
-
-        t += frameTime;
-
-        prevTicks = currentTicks;
-
-        if(t >= timeTick)
+        while(SDL_PollEvent(&event))
         {
-            const float alpha = t / timeTick;
-
-            t -= timeTick;
-        
-
-            while(SDL_PollEvent(&event))
+            switch(event.type)
             {
-                switch(event.type)
-                {
-                    case SDL_QUIT:
-                    {
-                        gamerunning = false;
-                        break;
-                    }
-                }
+            case SDL_QUIT:
+                gamerunning = false;
+                break;
             }
-
-            screen.clear();
-
-            for(int i = 0; i < (int)entities.size(); i++)
-            {
-                screen.render(entities[i]);
-                entities[i].position().y += entities[i].speed;
-
-                if(entities[i].position().y > 800)
-                {
-                    entities.erase(entities.begin() + i);
-                    i--;
-
-                    Vector2f pos(dis(gen) * 1600, -1 * dis(gen) * 1000);
-                    Snow tempentity(pos, snow, 8, 8, (dis(gen) + 0.1) / 5 + 0.2);
-                    entities.push_back(tempentity);
-                }
-            }
-
-            std::cout << alpha << std::endl;
-
-            screen.display();
         }
+
+        screen.clear();
+
+        for(int i = 0; i < (int)entities.size(); i++)
+        {
+            screen.render(entities[i]);
+            entities[i].position().y += entities[i].speed * deltaTime;
+
+            if(entities[i].position().y > 800)
+            {
+                entities.erase(entities.begin() + i);
+                i--;
+
+                Snow tempentity(Vector2f(dis(gen) * 1600, -1 * dis(gen) * 100), snow, 8, 8, (dis(gen) + 1) / 20);
+                entities.push_back(tempentity);
+            }
+        }
+
+        screen.display();
     }
 
     screen.clean();
