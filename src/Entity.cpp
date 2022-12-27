@@ -4,8 +4,8 @@
 #include <Entity.hpp>
 #include <Vector2f.hpp>
 
-Entity::Entity(Vector2f p_pos, SDL_Texture* p_tex, int p_w, int p_h)
-    :pos(p_pos), tex(p_tex)
+Entity::Entity(Vector2f p_pos, SDL_Texture* p_tex, int p_w, int p_h, unsigned char p_opacity)
+    :pos(p_pos), tex(p_tex), opacity(p_opacity)
 {
     currentFrame.x = 0;
     currentFrame.y = 0;
@@ -26,4 +26,9 @@ SDL_Rect Entity::getCurrentFrame()
 SDL_Texture* Entity::getTex()
 {
     return tex;
+}
+
+unsigned char Entity::getOpacity()
+{
+    return opacity;
 }

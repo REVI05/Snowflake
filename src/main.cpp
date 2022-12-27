@@ -1,6 +1,13 @@
+#if       _WIN32_WINNT < 0x0500
+  #undef  _WIN32_WINNT
+  #define _WIN32_WINNT   0x0500
+#endif
+
+#include <windows.h>
 #include <iostream>
 #include <vector>
 #include <random>
+
 
 #include <Screen.hpp>
 #include <Snow.hpp>
@@ -8,8 +15,12 @@
 
 int main(int argc, char** argv)
 {
+    ShowWindow(GetConsoleWindow(), SW_HIDE);
+
     if(SDL_Init(SDL_INIT_VIDEO))
         std::cout << "SDL init failed. Error : " << SDL_GetError() << std::endl;
+    if(!IMG_Init(IMG_INIT_PNG))
+        std::cout << "IMG init failed. Error : " << IMG_GetError() << std::endl;
 
     Screen screen("SnowFlake", 1600, 800);
 
@@ -27,7 +38,7 @@ int main(int argc, char** argv)
 
     for(int i = 0; i < 50; i++)
     {
-        Snow tempentity(Vector2f(dis(gen) * 1600, -1 * dis(gen) * 1000), snow, 8, 8, (dis(gen) + 1) / 20);
+        Snow tempentity(Vector2f(dis(gen) * 1600, -1 * dis(gen) * 1000), snow, 8, 8, (unsigned char)(dis(gen) * 200 + 55), (dis(gen) + 1) / 20);
         entities.push_back(tempentity);
     }
 
@@ -65,7 +76,7 @@ int main(int argc, char** argv)
                 entities.erase(entities.begin() + i);
                 i--;
 
-                Snow tempentity(Vector2f(dis(gen) * 1600, -1 * dis(gen) * 100), snow, 8, 8, (dis(gen) + 1) / 20);
+                Snow tempentity(Vector2f(dis(gen) * 1600, -1 * dis(gen) * 100), snow, 8, 8, (unsigned char)(dis(gen) * 200 + 55), (dis(gen) + 1) / 20);
                 entities.push_back(tempentity);
             }
         }

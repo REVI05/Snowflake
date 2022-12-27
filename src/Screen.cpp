@@ -53,6 +53,9 @@ void Screen::render(Entity& p_entity)
     dst.w = p_entity.getCurrentFrame().w;
     dst.h = p_entity.getCurrentFrame().h;
 
+    SDL_SetTextureAlphaMod(p_entity.getTex(), p_entity.getOpacity());
+    SDL_SetTextureBlendMode(p_entity.getTex(), SDL_BLENDMODE_BLEND);
+
 	SDL_RenderCopy(renderer, p_entity.getTex(), &src, &dst);
 }
 
