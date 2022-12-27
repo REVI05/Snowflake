@@ -1,9 +1,3 @@
-#if       _WIN32_WINNT < 0x0500
-  #undef  _WIN32_WINNT
-  #define _WIN32_WINNT   0x0500
-#endif
-
-#include <windows.h>
 #include <iostream>
 #include <vector>
 #include <random>
@@ -15,7 +9,6 @@
 
 int main(int argc, char** argv)
 {
-    ShowWindow(GetConsoleWindow(), SW_HIDE);
 
     if(SDL_Init(SDL_INIT_VIDEO))
         std::cout << "SDL init failed. Error : " << SDL_GetError() << std::endl;
