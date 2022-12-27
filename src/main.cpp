@@ -2,7 +2,6 @@
 #include <vector>
 #include <random>
 
-
 #include <Screen.hpp>
 #include <Snow.hpp>
 #include <Vector2f.hpp>
@@ -31,7 +30,7 @@ int main(int argc, char** argv)
 
     for(int i = 0; i < 50; i++)
     {
-        Snow tempentity(Vector2f(dis(gen) * 1600, -1 * dis(gen) * 1000), snow, 8, 8, (unsigned char)(dis(gen) * 200 + 55), (dis(gen) + 1) / 20);
+        Snow tempentity(Vector2f(dis(gen) * 1600, -1 * dis(gen) * 800 - 4), snow, 8, 8, (unsigned char)(dis(gen) * 200 + 55), (dis(gen) * 20 + 20) / 400, dis(gen) * 10 +1000, dis(gen), dis(gen) < 0.5 ? -1 : 1);
         entities.push_back(tempentity);
     }
 
@@ -62,14 +61,33 @@ int main(int argc, char** argv)
         for(int i = 0; i < (int)entities.size(); i++)
         {
             screen.render(entities[i]);
+            entities[i].position().x += entities[i].swingspeed * entities[i].swingdir / 20000 * deltaTime;
             entities[i].position().y += entities[i].speed * deltaTime;
+
+
+            std::cout << entities[0].swingdir << ' ';
+
+            
+            entities[i].swingspeed += entities[i].swinginde * deltaTime;
+
+            if(entities[i].swingspeed >= entities[i].swing)
+            {
+                entities[i].swingspeed = entities[i].swing;
+                entities[i].swinginde = -1;
+            }
+            else if(entities[i].swingspeed <= 0)
+            {
+                entities[i].swingspeed = 0;
+                entities[i].swinginde = 1;
+                entities[i].swingdir *= -1;
+            }
 
             if(entities[i].position().y > 800)
             {
                 entities.erase(entities.begin() + i);
                 i--;
 
-                Snow tempentity(Vector2f(dis(gen) * 1600, -1 * dis(gen) * 100), snow, 8, 8, (unsigned char)(dis(gen) * 200 + 55), (dis(gen) + 1) / 20);
+                Snow tempentity(Vector2f(dis(gen) * 1600, -4), snow, 8, 8, (unsigned char)(dis(gen) * 200 + 55), (dis(gen) * 10 + 30) / 400, dis(gen) * 10 + 1000, dis(gen), dis(gen) < 0.5 ? -1 : 1);
                 entities.push_back(tempentity);
             }
         }
