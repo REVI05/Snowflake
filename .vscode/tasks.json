@@ -6,6 +6,7 @@
             "command": "g++",
             "args": [
                 "--machine-windows",
+                "-O3",
 				"-g",
 				"src/*.cpp",
                 "-o",
