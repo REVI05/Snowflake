@@ -28,9 +28,17 @@ int main(int argc, char** argv)
 
     std::vector<Snow> entities;
 
-    for(int i = 0; i < 50; i++)
+    for(int i = 0; i < 100; i++)
     {
-        Snow tempentity(Vector2f(dis(gen) * 1600, -1 * dis(gen) * 800 - 4), snow, 8, 8, (unsigned char)(dis(gen) * 200 + 55), (dis(gen) * 20 + 20) / 400, dis(gen) * 10 +1000, dis(gen), dis(gen) < 0.5 ? -1 : 1);
+        Snow tempentity(
+            Vector2f(dis(gen) * 1600, -1 * dis(gen) * 800 - 4),
+            snow, 8, 8, (unsigned char)(dis(gen) * 200 + 55),
+            dis(gen) * 20 + 40,
+            dis(gen) * 5 + 10,
+            dis(gen) * 5 + 10,
+            dis(gen) < 0.5 ? -1 : 1,
+            dis(gen) < 0.5 ? -10 : 10
+        );
         entities.push_back(tempentity);
     }
 
@@ -40,11 +48,25 @@ int main(int argc, char** argv)
     Uint64 LAST = 0;
     float deltaTime = 0;
 
+    // int fps = 0;
+    // float time = 0;
+
     while(gamerunning)
     {
         LAST = NOW;
         NOW = SDL_GetPerformanceCounter();
-        deltaTime = (float)((NOW - LAST) * 1000 / (float)SDL_GetPerformanceFrequency());
+        deltaTime = (float)(NOW - LAST) / SDL_GetPerformanceFrequency();
+
+
+        // time += deltaTime;
+        // fps++;
+
+        // if(time >= 1)
+        // {
+        //     std::cout << fps << std::endl;
+        //     time -= 1;
+        //     fps = 0;
+        // }
 
         while(SDL_PollEvent(&event))
         {
@@ -61,11 +83,8 @@ int main(int argc, char** argv)
         for(int i = 0; i < (int)entities.size(); i++)
         {
             screen.render(entities[i]);
-            entities[i].position().x += entities[i].swingspeed * entities[i].swingdir / 20000 * deltaTime;
+            entities[i].position().x += entities[i].swingspeed * entities[i].swingdir * deltaTime;
             entities[i].position().y += entities[i].speed * deltaTime;
-
-
-            std::cout << entities[0].swingdir << ' ';
 
             
             entities[i].swingspeed += entities[i].swinginde * deltaTime;
@@ -73,12 +92,12 @@ int main(int argc, char** argv)
             if(entities[i].swingspeed >= entities[i].swing)
             {
                 entities[i].swingspeed = entities[i].swing;
-                entities[i].swinginde = -1;
+                entities[i].swinginde *= -1;
             }
             else if(entities[i].swingspeed <= 0)
             {
                 entities[i].swingspeed = 0;
-                entities[i].swinginde = 1;
+                entities[i].swinginde *= -1;
                 entities[i].swingdir *= -1;
             }
 
@@ -87,7 +106,15 @@ int main(int argc, char** argv)
                 entities.erase(entities.begin() + i);
                 i--;
 
-                Snow tempentity(Vector2f(dis(gen) * 1600, -4), snow, 8, 8, (unsigned char)(dis(gen) * 200 + 55), (dis(gen) * 10 + 30) / 400, dis(gen) * 10 + 1000, dis(gen), dis(gen) < 0.5 ? -1 : 1);
+                Snow tempentity(
+                    Vector2f(dis(gen) * 1600, -4),
+                    snow, 8, 8, (unsigned char)(dis(gen) * 200 + 55),
+                    dis(gen) * 20 + 40,
+                    dis(gen) * 5 + 10,
+                    dis(gen) * 5 + 10,
+                    dis(gen) < 0.5 ? -1 : 1,
+                    dis(gen) < 0.5 ? -10 : 10
+                );
                 entities.push_back(tempentity);
             }
         }
