@@ -16,6 +16,8 @@ int main(int argc, char** argv)
 
     Screen screen("SnowFlake", 1600, 800);
 
+    SDL_GL_SetSwapInterval(1);
+
     SDL_Event event;
 
     SDL_Texture* snow = screen.loadTexture("res/gfx/snow.png");
