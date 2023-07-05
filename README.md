@@ -1,2 +1,3 @@
 # Snowflake
- .
+
+## requirements : SDL2
